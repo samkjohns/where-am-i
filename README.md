@@ -1,6 +1,6 @@
 # Where Am I
 
-Where Am I is a game that places the player in a random spot in the world via Google Street View and expects them to guess where they are. The player receives a score based on how close their guess was to their actual location.
+Where Am I is a clone of [GeoGuessr](https://geoguessr.com/), a game that places the player in a random spot in the world via Google Street View and expects them to guess where they are. The player receives a score based on how close their guess was to their actual location.
 
 ## Features
 
