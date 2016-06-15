@@ -19714,9 +19714,10 @@
 	  displayName: 'exports',
 	
 	  componentDidMount: function () {
+	
 	    var viewDOMNode = this.refs.view;
 	    var viewOptions = {
-	      position: { lat: 40.7411188, lng: -74.0015258 },
+	      position: { lat: 0, lng: 0 },
 	      addressControl: false,
 	      linksControl: false,
 	      panControl: true,
@@ -19725,6 +19726,38 @@
 	    };
 	
 	    this.view = new google.maps.StreetViewPanorama(viewDOMNode, viewOptions);
+	
+	    this.setPositionRandomly(function (latlng) {
+	      this.view.setPosition(latlng);
+	    }.bind(this));
+	  },
+	
+	  setPositionRandomly: function (successCallback) {
+	    function randomCoord() {
+	      return Math.random() * 360 - 180;
+	    }
+	
+	    var latlng = {
+	      lat: randomCoord(),
+	      lng: randomCoord()
+	    };
+	    console.log(latlng);
+	
+	    var sv = new google.maps.StreetViewService();
+	    sv.getPanorama({
+	      location: latlng,
+	      radius: 10000
+	    }, function (data, status) {
+	      if (status === google.maps.StreetViewStatus.OK) {
+	        successCallback(data.location.latLng);
+	      } else {
+	        this.setPositionRandomly(successCallback);
+	      }
+	    }.bind(this));
+	  },
+	
+	  submitGuess: function (marker) {
+	    console.log(marker);
 	  },
 	
 	  render: function () {
@@ -19732,7 +19765,7 @@
 	      'div',
 	      { className: 'game-view' },
 	      React.createElement('div', { className: 'view', ref: 'view' }),
-	      React.createElement(MiniMap, null)
+	      React.createElement(MiniMap, { submitGuess: this.submitGuess })
 	    );
 	  }
 	});
@@ -19746,6 +19779,12 @@
 	var MiniMap = module.exports = React.createClass({
 	  displayName: 'exports',
 	
+	
+	  getInitialState: function () {
+	    return {
+	      marker: null
+	    };
+	  },
 	
 	  componentDidMount: function () {
 	    var mapDOMNode = this.refs.miniMap;
@@ -19766,27 +19805,36 @@
 	      lng: evnt.latLng.lng()
 	    };
 	
-	    this.marker && this.marker.setMap(null);
-	    this.marker = new google.maps.Marker({
-	      position: pos,
-	      map: this.minimap
+	    // just to be safe, remove the marker before calling setState
+	    this.state.marker && this.state.marker.setMap(null);
+	    this.setState({
+	      marker: new google.maps.Marker({
+	        position: pos,
+	        map: this.minimap
+	      })
 	    });
+	  },
+	
+	  submitGuess: function (evnt) {
+	    evnt.preventDefault();
+	    this.state.marker && this.props.submitGuess(this.state.marker);
 	  },
 	
 	  render: function () {
 	    var submitButton = React.createElement('div', null);
-	    if (this.marker) {
+	    if (this.state.marker) {
 	      submitButton = React.createElement(
 	        'button',
 	        { className: 'make-guess', onClick: this.submitGuess },
-	        'Guess'
+	        'GUESS'
 	      );
 	    }
 	
 	    return React.createElement(
 	      'div',
 	      { className: 'mini-map-pane' },
-	      React.createElement('div', { ref: 'miniMap', className: 'mini-map' })
+	      React.createElement('div', { ref: 'miniMap', className: 'mini-map' }),
+	      submitButton
 	    );
 	  }
 	});

@@ -14,11 +14,11 @@ Where Am I is a clone of [GeoGuessr](https://geoguessr.com/), a game that places
 
 ### Phase 1
 
-- [ ] Build basic `GameView` component that properly sets up connection to Google Maps API.
-- [ ] Configure view to show no more information than we want:
-  - [ ] Street View should always be on
-  - [ ] Street View controls should be on
-  - [ ] Street labels and other meta-information should be off
+- [x] Build basic `GameView` component that properly sets up connection to Google Maps API.
+- [x] Configure view to show no more information than we want:
+  - [x] Street View should always be on
+  - [x] Street View controls should be on
+  - [x] Street labels and other meta-information should be off
 - [ ] Implement randomized placement (in a valid Street View location).
 
 ### Phase 2

@@ -2,6 +2,12 @@ var React = require('react');
 
 var MiniMap = module.exports = React.createClass({
 
+  getInitialState: function () {
+    return {
+      marker: null
+    };
+  },
+
   componentDidMount: function () {
     var mapDOMNode = this.refs.miniMap;
     var mapOptions = {
@@ -21,24 +27,35 @@ var MiniMap = module.exports = React.createClass({
       lng: evnt.latLng.lng()
     };
 
-    this.marker && this.marker.setMap(null);
-    this.marker = new google.maps.Marker({
-      position: pos,
-      map: this.minimap
+    // just to be safe, remove the marker before calling setState
+    this.state.marker && this.state.marker.setMap(null);
+    this.setState({
+      marker: new google.maps.Marker({
+        position: pos,
+        map: this.minimap
+      })
     });
+  },
+
+  submitGuess: function (evnt) {
+    evnt.preventDefault();
+    this.state.marker && this.props.submitGuess(this.state.marker);
   },
 
   render: function () {
     var submitButton = <div/>;
-    if (this.marker) {
+    if (this.state.marker) {
       submitButton = (
-        <button className="make-guess" onClick={this.submitGuess}>Guess</button>
+        <button className="make-guess" onClick={this.submitGuess}>
+          GUESS
+        </button>
       );
     }
 
     return(
       <div className="mini-map-pane">
         <div ref="miniMap" className="mini-map"/>
+        {submitButton}
       </div>
     );
   }
