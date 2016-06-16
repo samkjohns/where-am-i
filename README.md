@@ -19,18 +19,18 @@ Where Am I is a clone of [GeoGuessr](https://geoguessr.com/), a game that places
   - [x] Street View should always be on
   - [x] Street View controls should be on
   - [x] Street labels and other meta-information should be off
-- [ ] Implement randomized placement (in a valid Street View location).
+- [x] Implement randomized placement (in a valid Street View location).
 
 ### Phase 2
 
-- [ ] Build `GuessingMap` component that:
-  - [ ] displays the entire world
-  - [ ] and allows the user to enter a guess by placing a marker and clicking a submit button.
-- [ ] Build `ResultsMap` component that:
-  - [ ] places markers on the player's actual location at the time of guess and on the guessed location;
-  - [ ] that draws a line between the two markers;
-  - [ ] that displays the distance between the markers and the resulting score;
-  - [ ] and that sets the map zoom to an appropriate amount (not too close, not too far)
+- [x] Build `GuessingMap` component that:
+  - [x] displays the entire world
+  - [x] and allows the user to enter a guess by placing a marker and clicking a submit button.
+- [x] Build `ResultsMap` component that:
+  - [x] places markers on the player's actual location at the time of guess and on the guessed location;
+  - [x] that draws a line between the two markers;
+  - [x] that displays the distance between the markers and the resulting score;
+  - [x] and that sets the map zoom to an appropriate amount (not too close, not too far)
 
 ### Phase 3
 

@@ -46,22 +46,89 @@
 
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    GameView = __webpack_require__(159);
+	    GameView = __webpack_require__(159),
+	    RoundResultView = __webpack_require__(162),
+	    GameOverView = __webpack_require__(163);
 	
 	var App = React.createClass({
 	  displayName: 'App',
 	
 	  getInitialState: function () {
 	    return {
-	      phase: "PLAYING",
-	      round: 1
+	      phase: "START",
+	      round: 0,
+	      roundResults: []
 	    };
+	  },
+	
+	  incrementPhase: function () {
+	    var newPhase, newRound;
+	
+	    switch (this.state.phase) {
+	      case 'START':
+	        newPhase = 'PLAYING';
+	        newRound = 0;
+	        break;
+	
+	      case "PLAYING":
+	        newPhase = this.state.round === 5 ? 'GAME OVER' : 'ROUND OVER';
+	        newRound = this.state.round;
+	        break;
+	
+	      case "ROUND OVER":
+	        newPhase = 'PLAYING';
+	        newRound = this.state.round + 1;
+	        break;
+	
+	      case 'GAME OVER':
+	        newPhase = 'START';
+	        newRound = 0;
+	        break;
+	    }
+	
+	    this.setState({
+	      phase: newPhase,
+	      round: newRound
+	    });
+	  },
+	
+	  setRoundResult: function (results) {
+	    this.incrementPhase();
+	    this.setState({ roundResults: this.state.roundResults.concat(results) });
+	  },
+	
+	  lastResult: function () {
+	    lastIdx = this.state.roundResults.length - 1;
+	    return this.state.roundResults[lastIdx];
 	  },
 	
 	  render: function () {
 	    switch (this.state.phase) {
 	      case "PLAYING":
-	        return React.createElement(GameView, null);
+	        return React.createElement(GameView, { setRoundResult: this.setRoundResult });
+	
+	      case 'ROUND OVER':
+	        return React.createElement(RoundResultView, {
+	          result: this.lastResult(),
+	          nextRound: this.incrementPhase
+	        });
+	
+	      case 'GAME OVER':
+	        return React.createElement(GameOverView, {
+	          results: this.state.roundResults,
+	          newGame: this.incrementPhase
+	        });
+	
+	      case 'START':
+	        return React.createElement(
+	          'div',
+	          { className: 'start-pane' },
+	          React.createElement(
+	            'button',
+	            { className: 'phase-button', onClick: this.incrementPhase },
+	            'START'
+	          )
+	        );
 	    }
 	  }
 	});
@@ -19714,7 +19781,6 @@
 	  displayName: 'exports',
 	
 	  componentDidMount: function () {
-	
 	    var viewDOMNode = this.refs.view;
 	    var viewOptions = {
 	      position: { lat: 0, lng: 0 },
@@ -19741,7 +19807,7 @@
 	      lat: randomCoord(),
 	      lng: randomCoord()
 	    };
-	    console.log(latlng);
+	    // console.log(latlng);
 	
 	    var sv = new google.maps.StreetViewService();
 	    sv.getPanorama({
@@ -19756,8 +19822,45 @@
 	    }.bind(this));
 	  },
 	
-	  submitGuess: function (marker) {
-	    console.log(marker);
+	  getCurrentPosition: function () {
+	    return this.view.getPosition();
+	  },
+	
+	  submitGuess: function (guessedMarker) {
+	    var guessedPosition = guessedMarker.position;
+	    var realPosition = this.getCurrentPosition();
+	
+	    function radiansOf(num) {
+	      return num * Math.PI / 180;
+	    }
+	
+	    // returns distance in meters between two GPS coordinates
+	    function haversineDistance(crd1, crd2) {
+	      var R = 3959; // miles
+	      var lat1 = crd1.lat();
+	      var lat2 = crd2.lat();
+	      var lng1 = crd1.lng();
+	      var lng2 = crd2.lng();
+	      var phi1 = radiansOf(lat1);
+	      var phi2 = radiansOf(lat2);
+	      var deltaPhi = radiansOf(lat2 - lat1);
+	      var deltaLambda = radiansOf(lng2 - lng1);
+	
+	      var a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+	      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	
+	      return R * c;
+	    }
+	
+	    var distance = haversineDistance(realPosition, guessedPosition);
+	    var score = Math.floor(10000000 / (distance + 1) - 1);
+	
+	    this.props.setRoundResult({
+	      distance: Math.floor(distance),
+	      guessedPosition: guessedPosition,
+	      realPosition: realPosition,
+	      points: score
+	    });
 	  },
 	
 	  render: function () {
@@ -19835,6 +19938,180 @@
 	      { className: 'mini-map-pane' },
 	      React.createElement('div', { ref: 'miniMap', className: 'mini-map' }),
 	      submitButton
+	    );
+	  }
+	});
+
+/***/ },
+/* 161 */,
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var RoundResultView = module.exports = React.createClass({
+	  displayName: 'exports',
+	
+	  componentDidMount: function () {
+	    var mapDOMNode = this.refs.roundResultMap;
+	    var mapOptions = {
+	      zoom: this.getZoomLevel(),
+	      streetViewControl: false,
+	      mapTypeControl: false,
+	      zoomControl: true,
+	      center: this.getCenter()
+	    };
+	
+	    this.resultMap = new google.maps.Map(mapDOMNode, mapOptions);
+	    var actualMarker = new google.maps.Marker({
+	      position: this.props.result.realPosition,
+	      map: this.resultMap
+	    });
+	
+	    var guessedMarker = new google.maps.Marker({
+	      position: this.props.result.guessedPosition,
+	      map: this.resultMap
+	    });
+	
+	    var line = new google.maps.Polyline({
+	      path: [this.props.result.realPosition, this.props.result.guessedPosition],
+	      strokeColor: '#000',
+	      strokeOpacity: .8,
+	      strokeWeight: 5
+	    });
+	    line.setMap(this.resultMap);
+	  },
+	
+	  getZoomLevel: function () {
+	    // hardcoded for now
+	
+	    if (this.props.result.distance < 200) {
+	      return 6;
+	    } else if (this.props.result.distance < 700) {
+	      return 5;
+	    } else if (this.props.result.distance < 1500) {
+	      return 4;
+	    } else if (this.props.result.distance < 3000) {
+	      return 3;
+	    } else if (this.props.result.distance < 5500) {
+	      return 3;
+	    } else if (this.props.result.distance < 6000) {
+	      return 3;
+	    }return 3;
+	  },
+	
+	  getCenter: function () {
+	    var p1 = this.props.result.guessedPosition;
+	    var p2 = this.props.result.realPosition;
+	
+	    // use the midpoint formula
+	    return {
+	      lat: (p1.lat() + p2.lat()) / 2,
+	      lng: (p1.lng() + p2.lng()) / 2
+	    };
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'result-pane' },
+	      React.createElement('div', { ref: 'roundResultMap', className: 'view result-map' }),
+	      React.createElement(
+	        'div',
+	        { className: 'result-stats-pane' },
+	        React.createElement(
+	          'p',
+	          null,
+	          'Your guess was ',
+	          this.props.result.distance,
+	          ' miles from the location'
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'You scored ',
+	          this.props.result.points,
+	          ' points'
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'phase-button', onClick: this.props.nextRound },
+	          'PLAY NEXT ROUND'
+	        )
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var GameOverView = module.exports = React.createClass({
+	  displayName: 'exports',
+	
+	  componentDidMount: function () {
+	    var mapDOMNode = this.refs.gameOverView;
+	    var mapOptions = {
+	      zoom: 2,
+	      streetViewControl: false,
+	      mapTypeControl: false,
+	      zoomControl: true,
+	      center: { lat: 20, lng: 0 }
+	    };
+	
+	    this.map = new google.maps.Map(mapDOMNode, mapOptions);
+	
+	    this.props.results.forEach(function (result) {
+	      var actualMarker = new google.maps.Marker({
+	        position: result.realPosition,
+	        map: this.map
+	      });
+	
+	      var guessedMarker = new google.maps.Marker({
+	        position: result.guessedPosition,
+	        map: this.map
+	      });
+	
+	      var line = new google.maps.Polyline({
+	        path: [result.realPosition, result.guessedPosition],
+	        strokeColor: '#000',
+	        strokeOpacity: .8,
+	        strokeWeight: 5
+	      });
+	      line.setMap(this.map);
+	    }.bind(this));
+	  },
+	
+	  total: function () {
+	    return this.props.results.reduce(function (accum, result) {
+	      return accum + result.points;
+	    }, 0);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'over-pane' },
+	      React.createElement('div', { ref: 'gameOverView', className: 'over-view' }),
+	      React.createElement(
+	        'div',
+	        { className: 'result-stats-pane' },
+	        React.createElement(
+	          'p',
+	          null,
+	          'You scored ',
+	          this.total(),
+	          ' points!'
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'phase-button', onClick: this.props.newGame },
+	          'PLAY AGAIN'
+	        )
+	      )
 	    );
 	  }
 	});
