@@ -19,6 +19,8 @@ var GameView = module.exports = React.createClass({
     this.setPositionRandomly(function (latlng) {
       this.view.setPosition(latlng);
     }.bind(this));
+
+    window.view = this.view;
   },
 
   setPositionRandomly: function (successCallback) {

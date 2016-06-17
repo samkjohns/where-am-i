@@ -19797,6 +19797,8 @@
 	    this.setPositionRandomly(function (latlng) {
 	      this.view.setPosition(latlng);
 	    }.bind(this));
+	
+	    window.view = this.view;
 	  },
 	
 	  setPositionRandomly: function (successCallback) {
@@ -19888,7 +19890,7 @@
 	    var mapDOMNode = this.refs.miniMap;
 	    var mapOptions = {
 	      center: { lat: 20, lng: 0 },
-	      zoom: 0,
+	      zoom: 1,
 	      zoomControl: true,
 	      streetViewControl: false,
 	      mapTypeControl: false
@@ -19905,11 +19907,13 @@
 	
 	    // just to be safe, remove the marker before calling setState
 	    this.state.marker && this.state.marker.setMap(null);
+	    var mark = "http://i.imgur.com/lVk6vQz.png";
 	    this.setState({
 	      marker: new google.maps.Marker({
 	        position: pos,
 	        map: this.minimap,
-	        draggable: true
+	        draggable: true,
+	        icon: mark
 	      })
 	    });
 	  },
@@ -20072,7 +20076,7 @@
 	var React = __webpack_require__(1);
 	
 	var RoundResultView = module.exports = React.createClass({
-	  displayName: 'exports',
+	  displayName: "exports",
 	
 	  componentDidMount: function () {
 	    var mapDOMNode = this.refs.roundResultMap;
@@ -20085,30 +20089,20 @@
 	    };
 	
 	    this.resultMap = new google.maps.Map(mapDOMNode, mapOptions);
-	    var circleIcon = {
-	      path: google.maps.SymbolPath.CIRCLE,
-	      scale: 1,
-	      strokeColor: 'black',
-	      strokeWeight: 25
-	    };
-	    var arrowIcon = {
-	      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-	      scale: 1,
-	      strokeColor: 'black',
-	      strokeWeight: 5
-	    };
+	    var flag = "http://i.imgur.com/zPBz4C9.png";
+	    var mark = "http://i.imgur.com/lVk6vQz.png";
 	
 	    var actualMarker = new google.maps.Marker({
 	      position: this.props.result.realPosition,
 	      map: this.resultMap,
-	      icon: circleIcon,
+	      icon: flag,
 	      zIndex: 12
 	    });
 	
 	    var guessedMarker = new google.maps.Marker({
 	      position: this.props.result.guessedPosition,
 	      map: this.resultMap,
-	      icon: arrowIcon,
+	      icon: mark,
 	      zIndex: 12
 	    });
 	
@@ -20161,30 +20155,23 @@
 	  render: function () {
 	    console.log(this.props.result.points);
 	    return React.createElement(
-	      'div',
-	      { className: 'result-pane' },
-	      React.createElement('div', { ref: 'roundResultMap', className: 'view result-map' }),
+	      "div",
+	      { className: "result-pane" },
+	      React.createElement("div", { ref: "roundResultMap", className: "view result-map" }),
 	      React.createElement(
-	        'div',
-	        { className: 'result-stats-pane' },
+	        "div",
+	        { className: "result-stats-pane" },
 	        React.createElement(
-	          'p',
+	          "p",
 	          null,
-	          'Your guess was ',
+	          "Your guess was ",
 	          this.props.result.distance,
-	          ' miles from the location'
+	          " miles from the location"
 	        ),
 	        React.createElement(
-	          'p',
-	          null,
-	          'You scored ',
-	          this.props.result.points,
-	          ' points'
-	        ),
-	        React.createElement(
-	          'button',
-	          { className: 'phase-button', onClick: this.props.nextRound },
-	          'PLAY NEXT ROUND'
+	          "button",
+	          { className: "phase-button", onClick: this.props.nextRound },
+	          "PLAY NEXT ROUND"
 	        )
 	      )
 	    );
@@ -20239,6 +20226,14 @@
 	    }, 0);
 	  },
 	
+	  avgDistance: function () {
+	    var totalDistance = this.props.results.reduce(function (accum, result) {
+	      return accum + result.distance;
+	    }, 0);
+	
+	    return Math.floor(totalDistance / this.props.results.length);
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -20250,9 +20245,9 @@
 	        React.createElement(
 	          'p',
 	          null,
-	          'You scored ',
-	          this.total(),
-	          ' points!'
+	          'You were an average of ',
+	          this.avgDistance(),
+	          ' miles away.'
 	        ),
 	        React.createElement(
 	          'button',

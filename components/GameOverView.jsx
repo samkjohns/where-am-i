@@ -43,12 +43,21 @@ var GameOverView = module.exports = React.createClass({
     }, 0);
   },
 
+  avgDistance: function () {
+    var totalDistance =
+    this.props.results.reduce(function (accum, result) {
+      return accum + result.distance;
+    }, 0);
+
+    return Math.floor(totalDistance / this.props.results.length);
+  },
+
   render: function () {
     return(
       <div className="over-pane">
         <div ref="gameOverView" className="over-view"/>
         <div className="result-stats-pane">
-          <p>You scored {this.total()} points!</p>
+          <p>You were an average of {this.avgDistance()} miles away.</p>
           <button className="phase-button" onClick={this.props.newGame}>
             PLAY AGAIN
           </button>

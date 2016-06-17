@@ -12,30 +12,20 @@ var RoundResultView = module.exports = React.createClass({
     }
 
     this.resultMap = new google.maps.Map(mapDOMNode, mapOptions);
-    var circleIcon = {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 1,
-      strokeColor: 'black',
-      strokeWeight: 25
-    };
-    var arrowIcon = {
-      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-      scale: 1,
-      strokeColor: 'black',
-      strokeWeight: 5
-    };
+    var flag = "http://i.imgur.com/zPBz4C9.png";
+    var mark = "http://i.imgur.com/lVk6vQz.png";
 
     var actualMarker = new google.maps.Marker({
       position: this.props.result.realPosition,
       map: this.resultMap,
-      icon: circleIcon,
+      icon: flag,
       zIndex: 12
     });
 
     var guessedMarker = new google.maps.Marker({
       position: this.props.result.guessedPosition,
       map: this.resultMap,
-      icon: arrowIcon,
+      icon: mark,
       zIndex: 12
     });
 
@@ -95,7 +85,6 @@ var RoundResultView = module.exports = React.createClass({
         <div ref="roundResultMap" className="view result-map" />
         <div className="result-stats-pane">
           <p>Your guess was {this.props.result.distance} miles from the location</p>
-          <p>You scored {this.props.result.points} points</p>
           <button className="phase-button" onClick={this.props.nextRound}>
             PLAY NEXT ROUND
           </button>

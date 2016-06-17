@@ -12,7 +12,7 @@ var MiniMap = module.exports = React.createClass({
     var mapDOMNode = this.refs.miniMap;
     var mapOptions = {
       center: {lat: 20, lng: 0},
-      zoom: 0,
+      zoom: 1,
       zoomControl: true,
       streetViewControl: false,
       mapTypeControl: false
@@ -29,11 +29,13 @@ var MiniMap = module.exports = React.createClass({
 
     // just to be safe, remove the marker before calling setState
     this.state.marker && this.state.marker.setMap(null);
+    var mark = "http://i.imgur.com/lVk6vQz.png";
     this.setState({
       marker: new google.maps.Marker({
         position: pos,
         map: this.minimap,
-        draggable: true
+        draggable: true,
+        icon: mark
       })
     });
   },
