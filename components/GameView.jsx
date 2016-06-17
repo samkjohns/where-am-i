@@ -1,16 +1,17 @@
 var React = require('react'),
-    MiniMap = require('./MiniMap');
+    MiniMap = require('./MiniMap'),
+    GeoRandom = require('../util/Randomization');
 
 var GameView = module.exports = React.createClass({
   componentDidMount: function () {
     var viewDOMNode = this.refs.view;
     var viewOptions = {
       position: { lat: 0, lng: 0 },
-      addressControl: false,
+      disableDefaultUI: true,
       linksControl: false,
-      panControl: true,
-      enableCloseButton: false,
+      panControl: false,
       zoomControl: true,
+      clickToGo: true
     };
 
     this.view = new google.maps.StreetViewPanorama(viewDOMNode, viewOptions);
@@ -21,21 +22,14 @@ var GameView = module.exports = React.createClass({
   },
 
   setPositionRandomly: function (successCallback) {
-    function randomCoord() {
-      return (Math.random() * 360) - 180;
-    }
 
-    var latlng = {
-      lat: randomCoord(),
-      lng: randomCoord()
-    };
-    // console.log(latlng);
+    var latlng = GeoRandom.randomLatlng();
 
     var sv = new google.maps.StreetViewService();
     sv.getPanorama(
       {
         location: latlng,
-        radius: 10000
+        radius: 1000
       },
 
       function (data, status) {
@@ -81,6 +75,7 @@ var GameView = module.exports = React.createClass({
     var distance = haversineDistance(realPosition, guessedPosition);
     var score = Math.floor((10000000 / (distance + 1)) - 1);
 
+    console.log(distance);
     this.props.setRoundResult({
       distance: Math.floor(distance),
       guessedPosition: guessedPosition,

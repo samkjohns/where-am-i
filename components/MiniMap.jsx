@@ -32,7 +32,8 @@ var MiniMap = module.exports = React.createClass({
     this.setState({
       marker: new google.maps.Marker({
         position: pos,
-        map: this.minimap
+        map: this.minimap,
+        draggable: true
       })
     });
   },

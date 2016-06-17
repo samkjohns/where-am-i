@@ -7,7 +7,7 @@ var GameOverView = module.exports = React.createClass({
       zoom: 2,
       streetViewControl: false,
       mapTypeControl: false,
-      zoomControl: true,
+      zoomControl: false,
       center: {lat: 20, lng: 0}
     }
 

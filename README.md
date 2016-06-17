@@ -34,9 +34,9 @@ Where Am I is a clone of [GeoGuessr](https://geoguessr.com/), a game that places
 
 ### Phase 3
 
-- [ ] Build `GameOverView` component that:
-  - [ ] Displays the entire world
-  - [ ] Displays the marker-pairs, lines, distances, and scores for each round on the map
-  - [ ] Displays the player's total score
-  - [ ] Provides a `New Game` button
-- [ ] Build a `StartGame` component / landing page.
+- [x] Build `GameOverView` component that:
+  - [x] Displays the entire world
+  - [x] Displays the marker-pairs, lines, distances, and scores for each round on the map
+  - [x] Displays the player's total score
+  - [x] Provides a `New Game` button
+- [x] Build a `StartGame` component / landing page.

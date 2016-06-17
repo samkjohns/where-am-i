@@ -12,24 +12,49 @@ var RoundResultView = module.exports = React.createClass({
     }
 
     this.resultMap = new google.maps.Map(mapDOMNode, mapOptions);
+    var circleIcon = {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 1,
+      strokeColor: 'black',
+      strokeWeight: 25
+    };
+    var arrowIcon = {
+      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+      scale: 1,
+      strokeColor: 'black',
+      strokeWeight: 5
+    };
+
     var actualMarker = new google.maps.Marker({
       position: this.props.result.realPosition,
-      map: this.resultMap
+      map: this.resultMap,
+      icon: circleIcon,
+      zIndex: 12
     });
 
     var guessedMarker = new google.maps.Marker({
       position: this.props.result.guessedPosition,
-      map: this.resultMap
+      map: this.resultMap,
+      icon: arrowIcon,
+      zIndex: 12
     });
 
+    var lineSymbol = {
+      path: 'M 0,-1 0,1',
+      strokeOpacity: 1,
+      scale: 3
+    };
     var line = new google.maps.Polyline({
       path: [
         this.props.result.realPosition,
         this.props.result.guessedPosition
       ],
-      strokeColor: '#000',
-      strokeOpacity: .8,
-      strokeWeight: 5
+      strokeOpacity: 0,
+      icons: [{
+        icon: lineSymbol,
+        offset: '0',
+        repeat: '15px'
+      }]
     });
     line.setMap(this.resultMap);
   },
@@ -64,6 +89,7 @@ var RoundResultView = module.exports = React.createClass({
   },
 
   render: function () {
+    console.log(this.props.result.points);
     return(
       <div className="result-pane">
         <div ref="roundResultMap" className="view result-map" />
