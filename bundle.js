@@ -63,6 +63,7 @@
 	
 	  incrementPhase: function () {
 	    var newPhase, newRound;
+	    var results = this.state.roundResults;
 	
 	    switch (this.state.phase) {
 	      case 'START':
@@ -71,7 +72,7 @@
 	        break;
 	
 	      case "PLAYING":
-	        newPhase = this.state.round === 5 ? 'GAME OVER' : 'ROUND OVER';
+	        newPhase = this.state.round === 4 ? 'GAME OVER' : 'ROUND OVER';
 	        newRound = this.state.round;
 	        break;
 	
@@ -83,12 +84,14 @@
 	      case 'GAME OVER':
 	        newPhase = 'START';
 	        newRound = 0;
+	        results = [];
 	        break;
 	    }
 	
 	    this.setState({
 	      phase: newPhase,
-	      round: newRound
+	      round: newRound,
+	      roundResults: results
 	    });
 	  },
 	
@@ -20185,7 +20188,7 @@
 	var React = __webpack_require__(1);
 	
 	var GameOverView = module.exports = React.createClass({
-	  displayName: 'exports',
+	  displayName: "exports",
 	
 	  componentDidMount: function () {
 	    var mapDOMNode = this.refs.gameOverView;
@@ -20200,21 +20203,32 @@
 	    this.map = new google.maps.Map(mapDOMNode, mapOptions);
 	
 	    this.props.results.forEach(function (result) {
+	      var flag = "http://i.imgur.com/zPBz4C9.png";
+	      var mark = "http://i.imgur.com/lVk6vQz.png";
+	
 	      var actualMarker = new google.maps.Marker({
 	        position: result.realPosition,
-	        map: this.map
+	        map: this.map,
+	        icon: flag
 	      });
 	
 	      var guessedMarker = new google.maps.Marker({
 	        position: result.guessedPosition,
-	        map: this.map
+	        map: this.map,
+	        icon: mark
 	      });
+	
+	      var lineSymbol = {
+	        path: 'M 0,-1 0,1',
+	        strokeOpacity: 1,
+	        scale: 3
+	      };
 	
 	      var line = new google.maps.Polyline({
 	        path: [result.realPosition, result.guessedPosition],
 	        strokeColor: '#000',
 	        strokeOpacity: .8,
-	        strokeWeight: 5
+	        strokeWeight: 2
 	      });
 	      line.setMap(this.map);
 	    }.bind(this));
@@ -20236,23 +20250,23 @@
 	
 	  render: function () {
 	    return React.createElement(
-	      'div',
-	      { className: 'over-pane' },
-	      React.createElement('div', { ref: 'gameOverView', className: 'over-view' }),
+	      "div",
+	      { className: "over-pane" },
+	      React.createElement("div", { ref: "gameOverView", className: "over-view" }),
 	      React.createElement(
-	        'div',
-	        { className: 'result-stats-pane' },
+	        "div",
+	        { className: "result-stats-pane" },
 	        React.createElement(
-	          'p',
+	          "p",
 	          null,
-	          'You were an average of ',
+	          "You were an average of ",
 	          this.avgDistance(),
-	          ' miles away.'
+	          " miles away."
 	        ),
 	        React.createElement(
-	          'button',
-	          { className: 'phase-button', onClick: this.props.newGame },
-	          'PLAY AGAIN'
+	          "button",
+	          { className: "phase-button", onClick: this.props.newGame },
+	          "PLAY AGAIN"
 	        )
 	      )
 	    );

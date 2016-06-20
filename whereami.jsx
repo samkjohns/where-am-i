@@ -15,6 +15,7 @@ var App = React.createClass({
 
   incrementPhase: function () {
     var newPhase, newRound;
+    var results = this.state.roundResults;
 
     switch (this.state.phase) {
       case 'START':
@@ -23,7 +24,7 @@ var App = React.createClass({
         break;
 
       case "PLAYING":
-        newPhase = this.state.round === 5 ? 'GAME OVER' : 'ROUND OVER';
+        newPhase = this.state.round === 4 ? 'GAME OVER' : 'ROUND OVER';
         newRound = this.state.round;
         break;
 
@@ -35,12 +36,14 @@ var App = React.createClass({
       case 'GAME OVER':
         newPhase = 'START';
         newRound = 0;
+        results = [];
         break;
     }
 
     this.setState({
       phase: newPhase,
-      round: newRound
+      round: newRound,
+      roundResults: results
     });
   },
 

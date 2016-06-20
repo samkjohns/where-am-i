@@ -14,15 +14,26 @@ var GameOverView = module.exports = React.createClass({
     this.map = new google.maps.Map(mapDOMNode, mapOptions);
 
     this.props.results.forEach(function (result) {
+      var flag = "http://i.imgur.com/zPBz4C9.png";
+      var mark = "http://i.imgur.com/lVk6vQz.png";
+
       var actualMarker = new google.maps.Marker({
         position: result.realPosition,
-        map: this.map
+        map: this.map,
+        icon: flag
       });
 
       var guessedMarker = new google.maps.Marker({
         position: result.guessedPosition,
-        map: this.map
+        map: this.map,
+        icon: mark
       });
+
+      var lineSymbol = {
+        path: 'M 0,-1 0,1',
+        strokeOpacity: 1,
+        scale: 3
+      };
 
       var line = new google.maps.Polyline({
         path: [
@@ -31,7 +42,7 @@ var GameOverView = module.exports = React.createClass({
         ],
         strokeColor: '#000',
         strokeOpacity: .8,
-        strokeWeight: 5
+        strokeWeight: 2
       });
       line.setMap(this.map);
     }.bind(this));
