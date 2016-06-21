@@ -1,8 +1,9 @@
 var React = require('react'),
     ReactDOM = require('react-dom'),
-    GameView = require('./components/GameView'),
-    RoundResultView = require('./components/RoundResultView'),
-    GameOverView = require('./components/GameOverView');
+    GameView = require('./GameView'),
+    RoundResultView = require('./RoundResultView'),
+    GameOverView = require('./GameOverView'),
+    StartView = require('./StartView');
 
 var App = React.createClass({
   getInitialState: function () {
@@ -80,11 +81,7 @@ var App = React.createClass({
 
       case 'START':
         return(
-          <div className="start-pane">
-            <button className="phase-button" onClick={this.incrementPhase}>
-              START
-            </button>
-          </div>
+          < StartView incrementPhase={this.incrementPhase} />
         );
     }
   }

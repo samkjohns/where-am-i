@@ -11,11 +11,12 @@ var MiniMap = module.exports = React.createClass({
   componentDidMount: function () {
     var mapDOMNode = this.refs.miniMap;
     var mapOptions = {
-      center: {lat: 20, lng: 0},
-      zoom: 1,
+      center: {lat: 0, lng: 0},
+      zoom: 2,
       zoomControl: true,
       streetViewControl: false,
-      mapTypeControl: false
+      mapTypeControl: false,
+      draggableCursor: 'crosshair'
     };
     this.minimap = new google.maps.Map(mapDOMNode, mapOptions);
     this.minimap.addListener('click', this.placeMarker);
@@ -46,11 +47,17 @@ var MiniMap = module.exports = React.createClass({
   },
 
   render: function () {
-    var submitButton = <div/>;
+    var submitButton;
     if (this.state.marker) {
       submitButton = (
         <button className="make-guess" onClick={this.submitGuess}>
-          GUESS
+          MAKE GUESS
+        </button>
+      );
+    } else {
+      submitButton = (
+        <button className="make-guess" onClick={function (evnt) {evnt.preventDefault();}}>
+          CLICK ON MINIMAP TO GUESS
         </button>
       );
     }

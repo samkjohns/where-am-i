@@ -2,7 +2,7 @@ var path = require("path");
 
 module.exports = {
   context: __dirname,
-  entry: "./whereami.jsx",
+  entry: "./components/whereami.jsx",
   output: {
     path: path.join(__dirname),
     filename: "bundle.js",

@@ -9,7 +9,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNOGDGw-pGGKJEGEEu1csmJrq14CJnVFo"
     ></script>
     <style>
-      html, body, div, button, p {
+      html, body, div, button, p, a, ul, h1 {
         background: transparent;
         color: inherit;
         font-family: sans-serif;
@@ -17,23 +17,46 @@
         border: 0;
         padding: 0;
         outline: 0;
+        list-style: none;
+        text-decoration: none;
       }
 
       .gmnoprint span {
         display: none;
       }
 
+      a:hover {
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .logo {
+        margin: 100px auto;
+        width: 650px;
+        padding: 5px;
+        border-bottom: 3px solid rgba(49, 60, 116, 0.9);
+
+        text-align: center;
+
+        font-family: Futura;
+        font-size: 90px;
+        color: rgba(228, 152, 2, 1);
+        letter-spacing: 8px;
+        text-shadow: 2px 2px 5px rgba(228, 152, 2, .5);
+      }
+
       .phase-button {
         padding: 10px 30px;
-        background: green;
+        background: rgba(49, 60, 116, 0.9);
         font-weight: bold;
         color: white;
         font-size: 18px;
         width: 300px;
         cursor: pointer;
         border-radius: 4px;
-        border: 1px solid rgba(0, 0, 0, .3);
+        border: 2px solid rgba(49, 60, 116, 0.3);
         border-style: outset;
+        letter-spacing: 2px;
       }
 
       #whereami {
@@ -50,7 +73,32 @@
       .start-pane button {
         position: absolute;
         top: 50%;
-        left: 38%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .portfolio-links {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .portfolio-links a {
+        float: left;
+        display: inline;
+        cursor: pointer;
+        padding: 5px 0px;
+        margin-right: 15px;
+        color: rgba(228, 152, 2, 1);
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 3px solid rgba(49, 60, 116, 0.8);
+      }
+
+      .portfolio-links a:nth-child(1) {
+        /*border-left: 1px solid rgba(0, 0, 0, .1);*/
+        margin-left: 15px;
       }
 
       .game-view {
@@ -72,15 +120,27 @@
         position: absolute;
         top: 0;
         right: 0;
-        height: 200px;
-        width: 400px;
+        height: 150px;
+        width: 300px;
         z-index: 5;
         border: 1px solid rgba(0, 0, 0, .2);
+        transition: all 0.5s ease;
+      }
+
+      .mini-map-pane:hover {
+        height: 250px;
+        width: 500px;
+        transition: all 0.5s ease;
       }
 
       .mini-map {
-        width: 100%;
-        height: 100%;
+        width: 300px;
+        height: 150px;
+      }
+
+      .mini-map:hover {
+        width: 500px;
+        height: 250px;
       }
 
       .make-guess {

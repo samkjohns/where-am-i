@@ -48,7 +48,8 @@
 	    ReactDOM = __webpack_require__(158),
 	    GameView = __webpack_require__(159),
 	    RoundResultView = __webpack_require__(162),
-	    GameOverView = __webpack_require__(163);
+	    GameOverView = __webpack_require__(163),
+	    StartView = __webpack_require__(164);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -123,15 +124,7 @@
 	        });
 	
 	      case 'START':
-	        return React.createElement(
-	          'div',
-	          { className: 'start-pane' },
-	          React.createElement(
-	            'button',
-	            { className: 'phase-button', onClick: this.incrementPhase },
-	            'START'
-	          )
-	        );
+	        return React.createElement(StartView, { incrementPhase: this.incrementPhase });
 	    }
 	  }
 	});
@@ -19892,11 +19885,12 @@
 	  componentDidMount: function () {
 	    var mapDOMNode = this.refs.miniMap;
 	    var mapOptions = {
-	      center: { lat: 20, lng: 0 },
-	      zoom: 1,
+	      center: { lat: 0, lng: 0 },
+	      zoom: 2,
 	      zoomControl: true,
 	      streetViewControl: false,
-	      mapTypeControl: false
+	      mapTypeControl: false,
+	      draggableCursor: 'crosshair'
 	    };
 	    this.minimap = new google.maps.Map(mapDOMNode, mapOptions);
 	    this.minimap.addListener('click', this.placeMarker);
@@ -19927,12 +19921,20 @@
 	  },
 	
 	  render: function () {
-	    var submitButton = React.createElement('div', null);
+	    var submitButton;
 	    if (this.state.marker) {
 	      submitButton = React.createElement(
 	        'button',
 	        { className: 'make-guess', onClick: this.submitGuess },
-	        'GUESS'
+	        'MAKE GUESS'
+	      );
+	    } else {
+	      submitButton = React.createElement(
+	        'button',
+	        { className: 'make-guess', onClick: function (evnt) {
+	            evnt.preventDefault();
+	          } },
+	        'CLICK ON MINIMAP TO GUESS'
 	      );
 	    }
 	
@@ -20267,6 +20269,84 @@
 	          "button",
 	          { className: "phase-button", onClick: this.props.newGame },
 	          "PLAY AGAIN"
+	        )
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var StartView = module.exports = React.createClass({
+	  displayName: 'exports',
+	
+	  getInitialState: function () {
+	    return {
+	      degrees: 0
+	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.interval = setInterval(this.rotate, 100);
+	  },
+	
+	  componentWillUnmount: function () {
+	    clearInterval(this.interval);
+	  },
+	
+	  rotate: function () {
+	    var rotationDegrees = this.state.degrees + 15;
+	    if (rotationDegrees >= 360) {
+	      rotationDegrees = 0;
+	    }
+	    this.setState({ degrees: rotationDegrees });
+	  },
+	
+	  render: function () {
+	    var rotationString = 'rotateY(' + this.state.degrees + 'deg)';
+	    var styles = {
+	      transform: 'perspective(1200px) ' + rotationString
+	    };
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'start-pane' },
+	      React.createElement(
+	        'h1',
+	        { className: 'logo', style: styles },
+	        'WHERE AM I'
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'phase-button', onClick: this.props.incrementPhase },
+	        'START'
+	      ),
+	      React.createElement(
+	        'ul',
+	        { className: 'portfolio-links' },
+	        React.createElement(
+	          'a',
+	          { href: 'http://skjohns.com' },
+	          'Portfolio'
+	        ),
+	        React.createElement(
+	          'a',
+	          { href: 'http://github.com/samkjohns' },
+	          'Github'
+	        ),
+	        React.createElement(
+	          'a',
+	          { href: 'https://www.linkedin.com/in/sam-johns-07249876' },
+	          'Linkedin'
+	        ),
+	        React.createElement(
+	          'a',
+	          { href: 'https://angel.co/samuel-johns' },
+	          'Angel List'
 	        )
 	      )
 	    );
