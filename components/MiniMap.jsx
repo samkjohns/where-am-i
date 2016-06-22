@@ -46,6 +46,7 @@ var MiniMap = module.exports = React.createClass({
 
     // just to be safe, remove the marker before calling setState
     this.state.marker && this.state.marker.setMap(null);
+    
     var mark = "http://i.imgur.com/lVk6vQz.png";
     this.setState({
       marker: new google.maps.Marker({
@@ -70,6 +71,7 @@ var MiniMap = module.exports = React.createClass({
           MAKE GUESS
         </button>
       );
+
     } else {
       submitButton = (
         <button className="make-guess" onClick={function (evnt) {evnt.preventDefault();}}>
