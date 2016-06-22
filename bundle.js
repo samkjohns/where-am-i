@@ -19878,7 +19878,8 @@
 	
 	  getInitialState: function () {
 	    return {
-	      marker: null
+	      marker: null,
+	      size: "small"
 	    };
 	  },
 	
@@ -19886,7 +19887,7 @@
 	    var mapDOMNode = this.refs.miniMap;
 	    var mapOptions = {
 	      center: { lat: 0, lng: 0 },
-	      zoom: 2,
+	      zoom: 1,
 	      zoomControl: true,
 	      streetViewControl: false,
 	      mapTypeControl: false,
@@ -19894,6 +19895,21 @@
 	    };
 	    this.minimap = new google.maps.Map(mapDOMNode, mapOptions);
 	    this.minimap.addListener('click', this.placeMarker);
+	  },
+	
+	  hover: function (evnt) {
+	    if (this.state.size !== "large") {
+	      this.setState({ size: "large" });
+	      google.maps.event.trigger(this.minimap, 'resize');
+	    }
+	  },
+	
+	  unhover: function (evnt) {
+	    // console.log("mouse out");
+	    if (this.state.size !== "small") {
+	      this.setState({ size: "small" });
+	      google.maps.event.trigger(this.minimap, 'resize');
+	    }
 	  },
 	
 	  placeMarker: function (evnt) {
@@ -19940,7 +19956,11 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'mini-map-pane' },
+	      {
+	        className: "mini-map-pane " + this.state.size,
+	        onMouseOver: this.hover,
+	        onMouseOut: this.unhover
+	      },
 	      React.createElement('div', { ref: 'miniMap', className: 'mini-map' }),
 	      submitButton
 	    );
@@ -20291,7 +20311,7 @@
 	  },
 	
 	  componentDidMount: function () {
-	    this.interval = setInterval(this.rotate, 100);
+	    this.interval = setInterval(this.rotate, 60);
 	  },
 	
 	  componentWillUnmount: function () {
@@ -20299,7 +20319,7 @@
 	  },
 	
 	  rotate: function () {
-	    var rotationDegrees = this.state.degrees + 15;
+	    var rotationDegrees = this.state.degrees + 5;
 	    if (rotationDegrees >= 360) {
 	      rotationDegrees = 0;
 	    }

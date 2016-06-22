@@ -120,27 +120,28 @@
         position: absolute;
         top: 0;
         right: 0;
-        height: 150px;
-        width: 300px;
         z-index: 5;
         border: 1px solid rgba(0, 0, 0, .2);
         transition: all 0.5s ease;
       }
 
-      .mini-map-pane:hover {
+      .small {
+        height: 150px;
+        width: 300px;
+      }
+
+      .large {
         height: 250px;
         width: 500px;
+      }
+
+      .mini-map-pane:hover {
         transition: all 0.5s ease;
       }
 
       .mini-map {
-        width: 300px;
-        height: 150px;
-      }
-
-      .mini-map:hover {
-        width: 500px;
-        height: 250px;
+        width: 100%;
+        height: 100%;
       }
 
       .make-guess {

@@ -4,7 +4,8 @@ var MiniMap = module.exports = React.createClass({
 
   getInitialState: function () {
     return {
-      marker: null
+      marker: null,
+      size: "small"
     };
   },
 
@@ -12,7 +13,7 @@ var MiniMap = module.exports = React.createClass({
     var mapDOMNode = this.refs.miniMap;
     var mapOptions = {
       center: {lat: 0, lng: 0},
-      zoom: 2,
+      zoom: 1,
       zoomControl: true,
       streetViewControl: false,
       mapTypeControl: false,
@@ -20,6 +21,21 @@ var MiniMap = module.exports = React.createClass({
     };
     this.minimap = new google.maps.Map(mapDOMNode, mapOptions);
     this.minimap.addListener('click', this.placeMarker);
+  },
+
+  hover: function (evnt) {
+    if (this.state.size !== "large") {
+      this.setState({ size: "large" });
+      google.maps.event.trigger(this.minimap, 'resize');
+    }
+  },
+
+  unhover: function (evnt) {
+    // console.log("mouse out");
+    if (this.state.size !== "small") {
+      this.setState({ size: "small" });
+      google.maps.event.trigger(this.minimap, 'resize');
+    }
   },
 
   placeMarker: function (evnt) {
@@ -63,7 +79,11 @@ var MiniMap = module.exports = React.createClass({
     }
 
     return(
-      <div className="mini-map-pane">
+      <div
+        className={"mini-map-pane " + this.state.size}
+        onMouseOver={this.hover}
+        onMouseOut={this.unhover}
+      >
         <div ref="miniMap" className="mini-map"/>
         {submitButton}
       </div>

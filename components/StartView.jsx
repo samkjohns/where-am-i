@@ -8,7 +8,7 @@ var StartView = module.exports = React.createClass({
   },
 
   componentDidMount: function () {
-    this.interval = setInterval(this.rotate, 100)
+    this.interval = setInterval(this.rotate, 60)
   },
 
   componentWillUnmount: function () {
@@ -16,7 +16,7 @@ var StartView = module.exports = React.createClass({
   },
 
   rotate: function () {
-    var rotationDegrees = this.state.degrees + 15;
+    var rotationDegrees = this.state.degrees + 5;
     if (rotationDegrees >= 360) {
       rotationDegrees = 0;
     }
